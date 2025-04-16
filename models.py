@@ -44,6 +44,12 @@ class ConvnetBlock(nn.Module):
 class MaskedConvnetBlock(nn.Module):
     def __init__(self, filters, *args, **kwargs):
         super(MaskedConvnetBlock, self).__init__(*args, **kwargs)
+        self.conv_layer1 = MaskedConv2d('B', filters, filters, kernel_size=3, padding=1)
+        self.batchnorm1 = nn.BatchNorm2d(filters)
+        self.relu = nn.ReLU()
+
+        self.conv_layer2 = MaskedConv2d('B', filters, filters, kernel_size=3, padding=1)
+        self.batchnorm2 = nn.BatchNorm2d(filters)
         
     def forward(self, x):
 
@@ -53,8 +59,15 @@ class MaskedConvnetBlock(nn.Module):
         #             Use the MaskedConv2d to implement a masked convolution.
         #             You'll want to use mask-type B.
         #
+        output = self.relu(self.batchnorm1(self.conv_layer1(x)))
+        output = self.batchnorm2(self.conv_layer2(x))
+        output += x
+        output = self.relu(output)
+        return output
+
+
  
-        raise NotImplementedError
+        
 
 class PixelCNN(nn.Module):
     def __init__(self, capacity=32, depth=9, *args, **kwargs):
