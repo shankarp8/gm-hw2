@@ -41,6 +41,11 @@ def discrete_output_elbo(x1,x2,z,logqzx):
     #             Use a (1-point) monte carlo estimate of the KL divergence.
     #
 
-    raise NotImplementedError
+    bce = F.binary_cross_entropy(x1, x2, reduction='none')
+    reconstruction = bce.view(bce.size(0), -1).sum(dim=1).mean()
+
+    interm1 = -1/2*torch.sum(z**2+np.log(2*np.pi),dim=1)
+
+    divergence = (logqzx-interm1).mean()
 
     return reconstruction, divergence
