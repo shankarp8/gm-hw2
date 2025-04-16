@@ -20,6 +20,14 @@ class MaskedConv2d(nn.Conv2d):
 class ConvnetBlock(nn.Module):
     def __init__(self, filters, *args, **kwargs):
         super(ConvnetBlock, self).__init__(*args, **kwargs)
+        self.conv_layer1 = nn.Conv2d(filters, filters, kernel_size=3, padding=1)
+        self.batchnorm1 = nn.BatchNorm2d(filters)
+        self.relu = nn.ReLU()
+
+        self.conv_layer2 = nn.Conv2d(filters, filters, kernel_size=3, padding=1)
+        self.batchnorm2 = nn.BatchNorm2d(filters)
+
+    
         
     def forward(self, x):
 
@@ -27,8 +35,11 @@ class ConvnetBlock(nn.Module):
         # Problem 5a: Implement a residual convnet block as described in Lecture 7.
         #             Use a kernel size of 3. Do not implement 1x1 convolutions.
         #
- 
-        raise NotImplementedError
+        output = self.relu(self.batchnorm1(self.conv_layer1(x)))
+        output = self.batchnorm2(self.conv_layer2(x))
+        output += x
+        output = self.relu(output)
+        return output
 
 class MaskedConvnetBlock(nn.Module):
     def __init__(self, filters, *args, **kwargs):
