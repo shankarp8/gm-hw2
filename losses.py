@@ -8,7 +8,9 @@ def gaussian_elbo(x1,x2,z,sigma,mu,logvar):
     #             Use the closed-form expression for the KL divergence from Problem 1.
     #
     
-    raise NotImplementedError
+    reconstruction = 1/2 * (1 / sigma**2) * torch.sum((x1-x2)**2, dim=[1,2,3]).mean()
+
+    divergence = 1/2 * torch.sum(torch.exp(logvar) + mu**2 - 1.0 - logvar, dim=1).mean()
 
     return reconstruction, divergence
 
