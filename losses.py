@@ -20,8 +20,14 @@ def mc_gaussian_elbo(x1,x2,z,sigma,mu,logvar):
     # Problem 5c: Compute the evidence lower bound for the Gaussian VAE.
     #             Use a (1-point) monte-carlo estimate of the KL divergence.
     #
+    reconstruction = 1/2 * (1 / sigma**2) * torch.sum((x1-x2)**2, dim=[1,2,3]).mean()
 
-    raise NotImplementedError
+    var = torch.exp(logvar)
+    interm1 = -1/2 * torch.sum(np.log(2*np.pi) + logvar+((z-mu)**2)/var, dim=1)
+
+    interm2 = -1/2*torch.sum(np.log(2*np.pi)+z**2, dim=1)
+
+    divergence = (interm1-interm2).mean()
 
     return reconstruction, divergence
 
