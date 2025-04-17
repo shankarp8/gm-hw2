@@ -46,6 +46,6 @@ def discrete_output_elbo(x1,x2,z,logqzx):
 
     interm1 = -1/2*torch.sum(z**2+np.log(2*np.pi),dim=1)
 
-    divergence = (logqzx-interm1).mean()
+    divergence = (-logqzx-interm1).mean()
 
     return reconstruction, divergence
